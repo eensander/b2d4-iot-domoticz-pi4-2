@@ -1,7 +1,6 @@
 {
   "defaultSeverity": "warning",
   "extends": [
-    "tslint:recommended"
   ],
   "linterOptions": {
     "exclude": [
@@ -9,7 +8,7 @@
     ]
   },
   "rules": {
-    "indent": [true, "spaces", 2],
+    "indent": [false, "tabs"],
     "interface-name": false,
     "no-consecutive-blank-lines": false,
     "object-literal-sort-keys": false,

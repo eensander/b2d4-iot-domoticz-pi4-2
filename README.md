@@ -1,5 +1,9 @@
 # b2d4-iot-domoticz
 
+Alternative implementation of
+
+![Screenshot](https://i.imgur.com/UuOS1qD.png)
+
 ## Project setup
 ```
 npm install
