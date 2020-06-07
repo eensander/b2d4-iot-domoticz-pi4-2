@@ -10,7 +10,7 @@
                 v-for="room in rooms"
                 @click="do_shit(room.name)"
                 :points=room.points
-                class="test-1"  />
+                class="room-item"  />
         </svg>
 
     </div>
@@ -55,12 +55,14 @@ export default Vue.extend({
 <style lang="scss">
 
 
-.test-1 {
+.room-item {
     fill:lime;
     stroke:purple;
     stroke-width:1;
 
     opacity: 0.3;
+
+    cursor: pointer;
 }
 
 </style>
