@@ -1,12 +1,15 @@
 <template>
     <div id="app" class="my-4 mx-4">
-        <div class="mx-64 mt-32 bg-gray-600 text-gray-100 py-2 px-4 text-left flex">
+        <div class="mx-16 md:mx-32 xl:mx-64 mt-32 bg-gray-600 text-gray-100 py-2 px-4 text-left flex">
             <span class="flex-1 ">B2D4 - IOT dinges</span>
             <input class="w-64 px-2 text-black bg-gray-200 text-gray-900" type="text" v-model="domoticz_base" />
         </div>
         <Main :domoticz_base="domoticz_base" :add_log="add_log" />
 
-        <component :is="dynamicWindow"></component>
+        <div class="mx-64 bg-gray-200 py-8 px-16">
+            <component :is="dynamicWindow"></component>
+        </div>
+
         <button @click="open_menu()" class="btn btn-blue">test</button>
 
         <div id="log" class="mx-64 relative">

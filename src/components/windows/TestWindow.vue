@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-64 bg-gray-200 py-8 px-16">
+    <div class="w-full">
 
         <!-- two inputs -->
         <div class="flex flex-col space-y-4">
