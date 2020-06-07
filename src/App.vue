@@ -5,6 +5,10 @@
             <input class="w-64 px-2 text-black bg-gray-200 text-gray-900" type="text" v-model="domoticz_base" />
         </div>
         <Main :domoticz_base="domoticz_base" :add_log="add_log" />
+
+        <component :is="dynamicWindow"></component>
+        <button @click="open_menu()" class="btn btn-blue">test</button>
+
         <div id="log" class="mx-64 relative">
             <textarea readonly class="w-full h-48 resize-none border-gray-400 border-b border-l border-r font-mono px-2 py-1" placeholder="Log content will be displayed here">
             </textarea>
@@ -15,7 +19,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Main from './components/Main.vue';
+
+import TestWindow from './components/windows/TestWindow.vue';
+import StartWindow from './components/windows/StartWindow.vue';
 
 /*
 @Component({
@@ -28,16 +34,24 @@ export default class App extends Vue {}
 
 export default Vue.extend({
     components: {
-        Main,
+        // MainWindow,
     },
 
     data: (): any => {
         return {
             domoticz_base: 'http://localhost:8080',
+            dynamicWindow: StartWindow,
         };
     },
 
     methods: {
+
+        open_menu(text: string): void {
+
+            this.dynamicWindow = TestWindow
+
+        },
+
 
         add_log(text: string): void {
 
