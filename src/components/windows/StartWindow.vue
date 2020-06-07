@@ -1,16 +1,18 @@
 <template>
     <div class="w-full">
 
-		<h2>Ganshit</h2>
+		<span style="text-xl font-bold">{{ current_room != null ? current_room.name : 'geen kamer gekozen'  }}</span>
 
-        <svg style="width:1000px;height:1000px;" viewBox="0 0 1000 1000">
+        <svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
             <image xlink:href="/floorplan-1.gif" width="100%"  />
 
             <polygon
                 v-for="room in rooms"
-                @click="do_shit(room.name)"
+                v-bind:key="room.name"
+                @click="room_click(room)"
                 :points=room.points
-                class="room-item"  />
+                class="room-item"
+                v-bind:class="{ 'room-active': is_active(room) }" />
         </svg>
 
     </div>
@@ -21,6 +23,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import axios from 'axios';
 
+type Room = {
+    name: string,
+    points: string
+}
+
+
 export default Vue.extend({
 
     props: {
@@ -30,6 +38,8 @@ export default Vue.extend({
 
     data: function(): any {
         return {
+            current_room: null,
+
             rooms: [
                 {
                     name: 'room-1',
@@ -41,10 +51,15 @@ export default Vue.extend({
 
     methods: {
 
-        do_shit: function(room_name) {
+        room_click: function(room: any) {
 
-            alert('you clicked ' + room_name)
+            this.current_room = room;
+            alert('you clicked ' + room.name);
 
+        },
+
+        is_active: function(room: any): boolean {
+            return room == this.current_room;
         }
 
     },
@@ -56,13 +71,22 @@ export default Vue.extend({
 
 
 .room-item {
-    fill:lime;
-    stroke:purple;
-    stroke-width:1;
+    fill: lime;
+    stroke: purple;
+    stroke-width: 1;
 
     opacity: 0.3;
 
     cursor: pointer;
+
+    &.room-active {
+        fill: orange;
+    }
+
+    &.room-possible {
+        fill: red;
+    }
+
 }
 
 </style>
