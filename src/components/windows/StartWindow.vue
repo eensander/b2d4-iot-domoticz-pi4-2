@@ -6,14 +6,11 @@
         <svg style="width:1000px;height:1000px;" viewBox="0 0 1000 1000">
             <image xlink:href="/floorplan-1.gif" width="100%"  />
 
-            <a xlink:href="javascript:void();" onclick="alert('g')">
-                <circle cx="243" cy="133" r="79" />
-            </a>
-
-            <a xlink:href="javascript:void();" onclick="do_shit('g')">
-                <polygon color="red" id="test" points="10,10 214,492 267,473 335,483 377,603 327,631 249,658 211,641"
-                    class="test-1"  />
-            </a>
+            <polygon
+                v-for="room in rooms"
+                @click="do_shit(room.name)"
+                :points=room.points
+                class="test-1"  />
         </svg>
 
     </div>
@@ -31,8 +28,24 @@ export default Vue.extend({
         add_log: Function,
     },
 
+    data: function(): any {
+        return {
+            rooms: [
+                {
+                    name: 'room-1',
+                    points: '100,100 308,100 308,159 295,159 294,208 100,208',
+                }
+            ]
+        }
+    },
+
     methods: {
 
+        do_shit: function(room_name) {
+
+            alert('you clicked ' + room_name)
+
+        }
 
     },
 
