@@ -9,11 +9,7 @@
             <polygon
                 v-for="room in rooms"
                 v-bind:key="room.name"
-<<<<<<< HEAD
                 @click="room_click(room)"
-=======
-                @click="do_shit(room.name)"
->>>>>>> be94f2fa9f7e4bf00812794deb43f1798c20b0d7
                 :points=room.points
                 class="room-item"
                 v-bind:class="{ 'room-active': is_active(room) }" />
