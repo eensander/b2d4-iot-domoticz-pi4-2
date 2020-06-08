@@ -1,7 +1,7 @@
 <template>
     <div class="w-full">
         <div>
-            <Timer :time_limit="timeLeft" />
+            <Timer :time_limit="timeLimit" @when_done="timer_done()" />
         </div>
 		<span style="">{{ current_room != null ? (current_room.name + '  - can go to - ' + current_room.adjacent_rooms) : 'geen kamer gekozen'  }}</span>
 
@@ -56,12 +56,11 @@ export default Vue.extend({
         current_room: Room | null,
         rooms: Room[],
         timeLimit: number,
-        timePassed: number
     } {
         return {
 
-            timeLimit: 20,
-            timePassed: 0,
+            timeLimit: 10,
+
             move_history: [],
 
             current_room: null,
@@ -256,6 +255,10 @@ export default Vue.extend({
         is_move_possible: function(room: Room): boolean {
             return this.current_room != null && this.current_room.can_go_to(room);
         },
+
+        timer_done: function(): void {
+            // alert('done');
+        }
 
     },
 

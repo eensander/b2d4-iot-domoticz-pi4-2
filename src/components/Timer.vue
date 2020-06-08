@@ -1,45 +1,19 @@
 <template>
   <div class="base-timer">
-    <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <g class="base-timer__circle">
-        <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
-        <path
-          :stroke-dasharray="circleDasharray"
-          class="base-timer__path-remaining"
-          :class="remainingPathColor"
-          d="
-            M 50, 50
-            m -45, 0
-            a 45,45 0 1,0 90,0
-            a 45,45 0 1,0 -90,0
-          "
-        ></path>
-      </g>
-    </svg>
-    <span class="base-timer__label">{{ formattedTimeLeft }}</span>
+
+    <div class="progressbar-outer overflow-hidden h-12 mb-4 text-xs flex rounded bg-indigo-200">
+        <span
+            class="font-bold mx-auto left-0 right-0 pt-2 absolute text-2xl align-middle"
+            :class="{ 'text-white': (timeFraction < 0.5) }">{{ formattedTimeLeft }}</span>
+        <div
+            :style="{ 'width': ((1-timeFraction)*100) + '%' }"
+            class="progressbar-inner bg-indigo-500"></div>
+    </div>
+
   </div>
 </template>
 
 <script>
-const FULL_DASH_ARRAY = 283;
-const WARNING_THRESHOLD = 10;
-const ALERT_THRESHOLD = 5;
-
-const COLOR_CODES = {
-  info: {
-    color: "green"
-  },
-  warning: {
-    color: "orange",
-    threshold: WARNING_THRESHOLD
-  },
-  alert: {
-    color: "red",
-    threshold: ALERT_THRESHOLD
-  }
-};
-
-const TIME_LIMIT = 20;
 
 export default {
   data() {
@@ -49,10 +23,12 @@ export default {
     };
   },
 
+  props: {
+    time_limit: Number,
+    when_done: Function,
+  },
+
   computed: {
-    circleDasharray() {
-      return `${(this.timeFraction * FULL_DASH_ARRAY).toFixed(0)} 283`;
-    },
 
     formattedTimeLeft() {
       const timeLeft = this.timeLeft;
@@ -67,25 +43,14 @@ export default {
     },
 
     timeLeft() {
-      return TIME_LIMIT - this.timePassed;
+      return this.time_limit - this.timePassed;
     },
 
     timeFraction() {
-      const rawTimeFraction = this.timeLeft / TIME_LIMIT;
-      return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
+      const rawTimeFraction = this.timeLeft / this.time_limit;
+      return rawTimeFraction - (1 / this.time_limit) * (1 - rawTimeFraction);
     },
 
-    remainingPathColor() {
-      const { alert, warning, info } = COLOR_CODES;
-
-      if (this.timeLeft <= alert.threshold) {
-        return alert.color;
-      } else if (this.timeLeft <= warning.threshold) {
-        return warning.color;
-      } else {
-        return info.color;
-      }
-    }
   },
 
   watch: {
@@ -103,6 +68,7 @@ export default {
   methods: {
     onTimesUp() {
       clearInterval(this.timerInterval);
+      this.$emit('when_done');
     },
 
     startTimer() {
@@ -113,56 +79,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.base-timer {
-  position: relative;
-  width: 300px;
-  height: 300px;
 
-  &__svg {
-    transform: scaleX(-1);
-  }
-
-  &__circle {
-    fill: none;
-    stroke: none;
-  }
-
-  &__path-elapsed {
-    stroke-width: 7px;
-    stroke: grey;
-  }
-
-  &__path-remaining {
-    stroke-width: 7px;
-    stroke-linecap: round;
-    transform: rotate(90deg);
-    transform-origin: center;
-    transition: 1s linear all;
-    fill-rule: nonzero;
-    stroke: currentColor;
-
-    &.green {
-      color: rgb(65, 184, 131);
-    }
-
-    &.orange {
-      color: orange;
-    }
-
-    &.red {
-      color: red;
-    }
-  }
-
-  &__label {
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-  }
+.progressbar-inner {
+    transition: 1s linear width
 }
+
 </style>
