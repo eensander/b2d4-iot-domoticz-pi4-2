@@ -21,14 +21,19 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import Room from '@/classes/room'
+
 import axios from 'axios';
 
-type Room = {
-    name: string,
-    points: string,
-    adjacent_rooms: string[]
-}
 
+let room: Room = {
+                    name: 'WJ.C.',
+                    points: '100,100 308,100 308,159 295,159 294,208 100,208',
+                    adjacent_rooms: [
+                        'MASTER SUITE',
+                        'MASTER BATH'
+                    ],
+                };
 
 export default Vue.extend({
 
@@ -37,7 +42,7 @@ export default Vue.extend({
         add_log: Function,
     },
 
-    data: function(): any {
+    data: function(): { current_room: string | null, rooms: Room[] } {
         return {
             current_room: null,
 
@@ -206,8 +211,7 @@ export default Vue.extend({
                         'FAMILY ROOM',
                     ]
                 },
-                
-                
+
             ],
 
         }
@@ -239,7 +243,7 @@ export default Vue.extend({
         },
 
         is_move_possible: function(room: Room): boolean {
-            return this.current_room != null && this.current_room.adjacent_rooms.includes(room.name);
+            return this.current_room != null && this.current_room.can_go_to(room.name);
         }
 
     },
