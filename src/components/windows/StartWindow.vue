@@ -94,6 +94,120 @@ export default Vue.extend({
                         'STOR. CLOSET'
                     ],
                 },
+                {
+                    name: 'COVERED PORCH',
+                    points: '',
+                    adjacent_rooms: [
+                        'MASTER SUITE',
+                        'FAMILY ROOM',
+                        'BEDROOM 2',
+                        'BEDROOM 3',
+                    ]
+                },
+                {
+                    name: 'BREAKFAST',
+                    points: '',
+                    adjacent_rooms: [
+                        'MASTER SUITE',
+                        'KITCHEN',
+                        'FAMILY ROOM',
+                    ]
+                },
+                {
+                    name: 'KITCHEN',
+                    points: '',
+                    adjacent_rooms: [
+                        'MUD RM',
+                        'BREAKFAST',
+                        'FAMILY ROOM',
+                        'DINING',
+                    ]
+                },
+                {
+                    name: 'FAMILY ROOM',
+                    points: '',
+                    adjacent_rooms: [
+                        'KITCHEN',
+                        'BREAKFAST',
+                        'BEDROOM 2',
+                        'BEDROOM 3',
+                        'COVERED PORCH',
+                        'BEDROOM 4',
+                        'GREETING HALL',
+                    ]
+                },
+                {
+                    name: 'DINING',
+                    points: '',
+                    adjacent_rooms: [
+                        'KITCHEN',
+                        'GREETING HALL',
+                        'ENTRY PORCH',
+                    ]
+                },
+                {
+                    name: 'GREETING HALL',
+                    points: '',
+                    adjacent_rooms: [
+                        'DINING',
+                        'FAMILY ROOM',
+                        'LIBRARY/BEDROOM 5',
+                        'LIVING ROOM',
+                        'ENTRY PORCH'
+                    ]
+                },
+                {
+                    name: 'ENTRY PORCH',
+                    points: '',
+                    adjacent_rooms: [
+                        'DINING',
+                        'GREETING HALL',
+                    ]
+                },
+                {
+                    name: 'LIVING ROOM',
+                    points: '',
+                    adjacent_rooms: [
+                        'GREETING HALL',
+                    ]
+                },
+                {
+                    name: 'LIBRARY/BEDROOM 5',
+                    points: '',
+                    adjacent_rooms: [
+                        'GREETING HALL',
+                        'BEDROOM 4',
+                        'FAMILY ROOM',
+                    ]
+                },
+                {
+                    name: 'BEDROOM 4',
+                    points: '',
+                    adjacent_rooms: [
+                        'FAMILY ROOM',
+                        'LIBRARY/BEDROOM 5',
+                    ]
+                },
+                {
+                    name: 'BEDROOM 3',
+                    points: '',
+                    adjacent_rooms: [
+                        'COVERED PORCH',
+                        'FAMILY ROOM',
+                        'BEDROOM 2',
+                    ]
+                },
+                {
+                    name: 'BEDROOM 2',
+                    points: '',
+                    adjacent_rooms: [
+                        'COVERED PORCH',
+                        'BEDROOM 3',
+                        'FAMILY ROOM',
+                    ]
+                },
+                
+                
             ],
 
         }
