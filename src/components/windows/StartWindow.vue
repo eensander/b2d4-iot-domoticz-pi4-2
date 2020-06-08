@@ -25,7 +25,8 @@ import axios from 'axios';
 
 type Room = {
     name: string,
-    points: string
+    points: string,
+    adjacent_rooms: string[]
 }
 
 
@@ -202,7 +203,7 @@ export default Vue.extend({
 
     methods: {
 
-        room_click: function(room: any) {
+        room_click: function(room: Room) {
 
             if (this.current_room == room) {
                 return;
@@ -221,11 +222,11 @@ export default Vue.extend({
 
         },
 
-        is_active: function(room: any): boolean {
+        is_active: function(room: Room): boolean {
             return this.current_room != null && this.current_room == room;
         },
 
-        is_move_possible: function(room: any): boolean {
+        is_move_possible: function(room: Room): boolean {
             return this.current_room != null && this.current_room.adjacent_rooms.includes(room.name);
         }
 
