@@ -1,16 +1,16 @@
 <template>
     <div id="app" class="my-4 mx-4">
-        <div class="mx-16 md:mx-32 xl:mx-64 mt-32 bg-gray-600 text-gray-100 py-2 px-4 text-left flex">
-            <span class="flex-1 ">B2D4 - IOT dinges</span>
-            <input class="w-64 px-2 text-black bg-gray-200 text-gray-900" type="text" v-model="domoticz_base" />
+        <div class="mx-8 md:mx-32 xl:mx-64 mt-12 md:mt-32 bg-gray-600 text-gray-100 py-2 px-4 text-left flex flex-col sm:flex-row">
+            <span class="flex-1 mb-2 sm:mb-0 mx-auto sm:mx-0">B2D4 - IOT Applications</span>
+            <input class="w-full sm:w-64 px-2 text-black bg-gray-200 text-gray-900" type="text" v-model="domoticz_base" />
         </div>
         <Main :domoticz_base="domoticz_base" :add_log="add_log" />
 
-        <div class="mx-64 bg-gray-200 py-8 px-16">
+        <div class="mx-8 md:mx-32 xl:mx-64 bg-gray-200 py-8 px-16">
+            <button @click="open_menu()" class="btn btn-blue">test window</button>
             <component :is="dynamicWindow"></component>
         </div>
 
-        <button @click="open_menu()" class="btn btn-blue">test</button>
 
         <div id="log" class="mx-64 relative">
             <textarea readonly class="w-full h-48 resize-none border-gray-400 border-b border-l border-r font-mono px-2 py-1" placeholder="Log content will be displayed here">
@@ -51,7 +51,14 @@ export default Vue.extend({
 
         open_menu(text: string): void {
 
-            this.dynamicWindow = TestWindow
+            if (this.dynamicWindow == TestWindow)
+            {
+                this.dynamicWindow = StartWindow;
+            }
+            else
+            {
+                this.dynamicWindow = TestWindow;
+            }
 
         },
 

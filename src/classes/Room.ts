@@ -1,8 +1,8 @@
 export default class Room {
 
-    public name!: string;
-    public points!: string;
-    public adjacent_rooms!: Array<string>;
+    public name: string = '';
+    public points: string = '';
+    public adjacent_rooms: Array<string> = [];
 
     // https://stackoverflow.com/a/37682352
     constructor(init?:Partial<Room>) {
