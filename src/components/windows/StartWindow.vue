@@ -1,10 +1,8 @@
 <template>
     <div class="w-full">
-
         <div>
-            <span class="text-3xl font-bold">timer holder</span>
+            <Timer :time_limit="timeLeft" />
         </div>
-
 		<span style="">{{ current_room != null ? (current_room.name + '  - can go to - ' + current_room.adjacent_rooms) : 'geen kamer gekozen'  }}</span>
 
         <svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
@@ -18,16 +16,17 @@
                 class="room-item"
                 v-bind:class="{ 'room-active': is_active(room), 'room-possible': is_move_possible(room) }" />
         </svg>
-
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-
-import Room from '@/classes/room'
+import Timer from '@/components/Timer.vue';
+import Room from '@/classes/room';
 
 import axios from 'axios';
+
+
 
 
 let room: Room = new Room({
@@ -46,8 +45,19 @@ export default Vue.extend({
         add_log: Function,
     },
 
-    data: function(): { current_room: string | null, rooms: Room[] } {
+    components: {
+        Timer
+    },
+
+    data: function(): {
+        current_room: Room | null,
+        rooms: Room[],
+        timeLimit: number,
+        timePassed: number } {
         return {
+            timeLimit: 20,
+            timePassed: 0,
+
             current_room: null,
 
             rooms: [
@@ -227,8 +237,6 @@ export default Vue.extend({
                 alert('you cant move to this room from your current room');
 
             }
-
-
         },
 
         is_active: function(room: Room): boolean {
@@ -240,6 +248,12 @@ export default Vue.extend({
         }
 
     },
+
+    computed: {
+        timeLeft(): number {
+            return this.timeLimit - this.timePassed;
+        }
+    }
 
 });
 </script>
