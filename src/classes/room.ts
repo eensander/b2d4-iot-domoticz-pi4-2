@@ -1,18 +1,16 @@
 export default class Room {
 
-    name: string;
-    points: string;
-    adjacent_rooms: Array<string>;
+    public name!: string;
+    public points!: string;
+    public adjacent_rooms!: Array<string>;
 
-    constructor(name: string, points: string, adjacent_rooms: Array<string>) {
-
-        this.name = name;
-        this.points = points;
-        this.adjacent_rooms = adjacent_rooms;
-
+    // https://stackoverflow.com/a/37682352
+    constructor(init?:Partial<Room>) {
+        Object.assign(this, init);
     }
 
     can_go_to(room: Room) {
+        console.log([this.name, this.adjacent_rooms]);
         return this.adjacent_rooms.includes(room.name);
     }
 
