@@ -7,6 +7,17 @@
 
 		<span style="">{{ current_room != null ? (current_room.name + '  - can go to - ' + current_room.adjacent_rooms) : 'geen kamer gekozen'  }}</span>
 
+        <table>
+            <tr>
+                <th>Room</th>
+                <th>From</th>
+            </tr>
+            <tr v-for="move in move_history" v-key="move.time">
+                <td>{{ move.room.name }}</td>
+                <td>{{ move.time.format('HH:mm:ss') }}</td>
+            </tr>
+        </table>
+
         <svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
             <image xlink:href="/floorplan-1.gif" width="100%"  />
 
@@ -25,19 +36,12 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import Room from '@/classes/room'
-
 import axios from 'axios';
+import dayjs, { Dayjs } from 'dayjs'
+
+import Room from '@/classes/room';
 
 
-let room: Room = new Room({
-    name: 'WJ.C.',
-    points: '100,100 308,100 308,159 295,159 294,208 100,208',
-    adjacent_rooms: [
-        'MASTER SUITE',
-        'MASTER BATH'
-    ],
-});
 
 export default Vue.extend({
 
@@ -46,8 +50,18 @@ export default Vue.extend({
         add_log: Function,
     },
 
-    data: function(): { current_room: string | null, rooms: Room[] } {
+    data: function(): {
+        // time_end: Dayjs,
+        move_history: { room: Room, time: Dayjs }[]
+        current_room: Room | null,
+        rooms: Room[]
+    } {
         return {
+
+            // time_end: new Dayjs().add(3, 'minute'),
+
+            move_history: [],
+
             current_room: null,
 
             rooms: [
@@ -220,6 +234,10 @@ export default Vue.extend({
             else if (this.current_room == null || this.is_move_possible(room))
             {
                 this.current_room = room;
+                this.move_history.push({
+                    room: room,
+                    time: dayjs()
+                });
                 // alert('you clicked ' + room.name);
             }
             else
@@ -237,9 +255,15 @@ export default Vue.extend({
 
         is_move_possible: function(room: Room): boolean {
             return this.current_room != null && this.current_room.can_go_to(room);
-        }
+        },
 
     },
+
+
+    mounted: function() {
+
+        // this.current_room = this.rooms.find(room => room.name == 'GREETING HALL')
+    }
 
 });
 </script>

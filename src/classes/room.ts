@@ -10,7 +10,6 @@ export default class Room {
     }
 
     can_go_to(room: Room) {
-        console.log([this.name, this.adjacent_rooms]);
         return this.adjacent_rooms.includes(room.name);
     }
 
