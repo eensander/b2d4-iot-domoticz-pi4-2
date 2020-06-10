@@ -7,10 +7,10 @@
         <Main :domoticz_base="domoticz_base" :add_log="add_log" />
 
         <div class="mx-64 bg-gray-200 py-8 px-16">
-            <component :is="dynamicWindow"></component>
+            <component :open_menu="open_menu" :is="dynamicWindow"></component>
         </div>
 
-        <button @click="open_menu()" class="btn btn-blue">test</button>
+        <button @click="open_menu('test')" class="btn btn-blue">test</button>
 
         <div id="log" class="mx-64 relative">
             <textarea readonly class="w-full h-48 resize-none border-gray-400 border-b border-l border-r font-mono px-2 py-1" placeholder="Log content will be displayed here">
@@ -26,6 +26,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import TestWindow from './components/windows/TestWindow.vue';
 import StartWindow from './components/windows/StartWindow.vue';
 import SettingsWindow from './components/windows/SettingsWindow.vue';
+
+var windows: { string: any } = {
+    'test': TestWindow,
+
+    'settings': SettingsWindow,
+    'start': StartWindow,
+}
 
 /*
 @Component({
@@ -50,9 +57,10 @@ export default Vue.extend({
 
     methods: {
 
-        open_menu(text: string): void {
+        open_menu(menu_name: string): void {
 
-            this.dynamicWindow = TestWindow
+            if (menu_name in menus)
+                this.dynamicWindow = menus[menu_name];
 
         },
 

@@ -21,7 +21,7 @@
 
             <polygon
                 v-for="room in rooms"
-                v-bind:key="room.name"
+                :key="room.name"
                 @click="room_click(room)"
                 :points=room.points
                 class="room-item"
@@ -60,7 +60,7 @@ export default Vue.extend({
     } {
         return {
 
-            timeLimit: 10,
+            timeLimit: (this.$store.state.settings.minutes) * 60 + this.$store.state.settings.seconds,
 
             move_history: [],
 
