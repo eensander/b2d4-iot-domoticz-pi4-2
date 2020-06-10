@@ -1,26 +1,28 @@
 <template>
     <div>
 
-        <div class="SettingsRow">
-            <a class="Setting"> Verstoptijd: </a>
-            <input class="SettingsInput" v-model="minutes" type="number" min="0">
-            <a style="margin-right: 10px">m</a>
-            <input class="SettingsInput" v-model="seconds" type="number" min="0">
-            <a style="margin-right: 10px">s</a>
-        </div>
+        <div class="w-full lg:w-2/3 xl:w-1/2 mx-auto text-left">
+            <div class="SettingsRow">
+                <span class="Setting"> Verstoptijd: </span>
+                <input class="SettingsInput" v-model="minutes" type="number" min="0">
+                <span style="margin-right: 10px">min</span>
+                <input class="SettingsInput" v-model="seconds" type="number" min="0">
+                <span style="margin-right: 10px">sec</span>
+            </div>
 
-        <div class="SettingsRow">
-            <a class="Setting"> Zichtbaarheid van het pad: </a>
-            <input class="SettingsInput" v-model="percentage" type="number" min="0" step="5">
-            <a>%</a>
-        </div>
+            <div class="SettingsRow">
+                <span class="Setting"> Zichtbaarheid van het pad: </span>
+                <input class="SettingsInput" v-model="percentage" type="number" min="0" step="5">
+                <span>%</span>
+            </div>
 
-        <div class="SettingsRow">
-            <a class="Setting"> Aantal gokken zoeker: </a>
-            <input class="SettingsInput" v-model="guesses" type="number" min="0">
-        </div>
-        <div style="margin-bottom: 0px; margin-top: 10px">
-            <button class="btn btn-blue" @click="start_game()">Start</button>
+            <div class="SettingsRow">
+                <span class="Setting"> Aantal gokken zoeker: </span>
+                <input class="SettingsInput" v-model="guesses" type="number" min="0">
+            </div>
+            <div class="mt-6 text-center w-full">
+                <button class="btn btn-indigo w-32" @click="start_game()">Start</button>
+            </div>
         </div>
 
     </div>
@@ -101,15 +103,24 @@ export default Vue.extend({
     // align-items: center;
     // justify-content: center;
 
+    @apply mb-3;
 }
 
 .Setting {
-    padding-right: 10px;
+    // padding-right: 10px;
+    // min-width: 500px;
+
+    @apply inline-block;
+    min-width: 200px;
+
 }
 
 .SettingsInput {
-    max-width: 35px;
+    @apply py-1 px-2 border-gray-400 border;
+
+    max-width: 80px;
     margin-right: 10px;
+
 }
 
 
