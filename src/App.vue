@@ -25,6 +25,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import TestWindow from './components/windows/TestWindow.vue';
 import StartWindow from './components/windows/StartWindow.vue';
+import SettingsWindow from './components/windows/SettingsWindow.vue';
 
 /*
 @Component({
@@ -43,7 +44,7 @@ export default Vue.extend({
     data: (): any => {
         return {
             domoticz_base: 'http://localhost:8080',
-            dynamicWindow: StartWindow,
+            dynamicWindow: SettingsWindow,
         };
     },
 

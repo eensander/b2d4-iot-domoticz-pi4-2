@@ -10,7 +10,7 @@
                 <th>Room</th>
                 <th>From</th>
             </tr>
-            <tr v-for="move in move_history" v-key="move.time">
+            <tr v-for="move in move_history" v-bind:key="move.time">
                 <td>{{ move.room.name }}</td>
                 <td>{{ move.time.format('HH:mm:ss') }}</td>
             </tr>
@@ -32,6 +32,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import store from '@/store';
 import Timer from '@/components/Timer.vue';
 import Room from '@/classes/room';
 
