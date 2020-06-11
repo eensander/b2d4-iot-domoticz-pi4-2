@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         settings: {
-            minutes: 5,
+            minutes: 1,
             seconds: 0,
             percentage: 60,
             guesses: 2

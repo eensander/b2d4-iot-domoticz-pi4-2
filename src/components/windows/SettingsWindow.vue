@@ -3,7 +3,7 @@
 
         <div class="w-full lg:w-2/3 xl:w-1/2 mx-auto text-left">
             <div class="SettingsRow">
-                <span class="Setting"> Verstoptijd: </span>
+                <span class="Setting">Verstoptijd: </span>
                 <input class="SettingsInput" v-model="minutes" type="number" min="0">
                 <span style="margin-right: 10px">min</span>
                 <input class="SettingsInput" v-model="seconds" type="number" min="0">
@@ -11,17 +11,17 @@
             </div>
 
             <div class="SettingsRow">
-                <span class="Setting"> Zichtbaarheid van het pad: </span>
+                <span class="Setting">Zichtbaarheid van het pad: </span>
                 <input class="SettingsInput" v-model="percentage" type="number" min="0" step="5">
                 <span>%</span>
             </div>
 
             <div class="SettingsRow">
-                <span class="Setting"> Aantal gokken zoeker: </span>
+                <span class="Setting">Aantal gokken zoeker: </span>
                 <input class="SettingsInput" v-model="guesses" type="number" min="0">
             </div>
             <div class="mt-6 text-center w-full">
-                <button class="btn btn-indigo w-32" @click="start_game()">Start</button>
+                <button class="btn btn-blue w-32" @click="open_menu('hiding_game')">Start</button>
             </div>
         </div>
 
@@ -37,7 +37,9 @@ import axios from 'axios';
 export default Vue.extend({
 
     props: {
-        open_menu: Function
+        domoticz_base: String,
+        add_log: Function,
+        open_menu: Function,
     },
 
     data: function(): {} {
@@ -87,7 +89,7 @@ export default Vue.extend({
         start_game(): void {
 
             // this.$emit('open_menu', 'start');
-            this.open_menu('start');
+            this.open_menu('game_hiding');
 
         }
 

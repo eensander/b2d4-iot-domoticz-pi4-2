@@ -7,7 +7,7 @@
         <!-- <Main :domoticz_base="domoticz_base" :add_log="add_log" /> -->
 
         <div class="mx-8 md:mx-32 xl:mx-64 bg-gray-200 py-8 px-16">
-            <component :open_menu="open_menu" :is="dynamicWindow"></component>
+            <component :open_menu="open_menu" :add_log="add_log" :domoticz_base="domoticz_base"  :is="dynamicWindow"></component>
         </div>
 
         <div id="log" class="mx-8 md:mx-32 xl:mx-64 relative">
@@ -27,12 +27,14 @@ import { Component, Vue } from 'vue-property-decorator';
 import TestWindow from './components/windows/TestWindow.vue';
 import StartWindow from './components/windows/StartWindow.vue';
 import SettingsWindow from './components/windows/SettingsWindow.vue';
+import HidingGameWindow from './components/windows/HidingGameWindow.vue';
 
 var windows: any = {
     'test': TestWindow,
 
     'settings': SettingsWindow,
     'start': StartWindow,
+    'hiding_game': HidingGameWindow,
 }
 
 /*
@@ -52,16 +54,19 @@ export default Vue.extend({
     data: (): any => {
         return {
             domoticz_base: 'http://localhost:8080',
-            dynamicWindow: SettingsWindow,
+            dynamicWindow: StartWindow,
         };
     },
 
     methods: {
 
-        open_menu(windows_name: string): void {
+        open_menu(window_name: string): void {
 
-            if (windows_name in windows)
-                this.dynamicWindow = windows[windows_name];
+            if (window_name in windows)
+            {
+                this.dynamicWindow = windows[window_name];
+                // this.add_log('Changed window to: ' + window_name);
+            }
 
         },
 
@@ -72,7 +77,7 @@ export default Vue.extend({
             const d = new Date();
             const dDate = [('0' + (d.getMonth() + 1)).slice(-2), ('0' + d.getDate()).slice(-2), d.getFullYear()].join('-');
             const dTime = [('0' + d.getHours()).slice(-2), ('0' + d.getMinutes()).slice(-2), ('0' + d.getSeconds()).slice(-2)].join(':');
-            const dTenthSecond = Math.round((d.getMilliseconds() / 100) - 1);
+            const dTenthSecond = Math.floor((d.getMilliseconds() / 100));
             const formattedDate = `${dDate} ${dTime}.${dTenthSecond}`;
 
             const logarea = document.querySelector('#log textarea');
