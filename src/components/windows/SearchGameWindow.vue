@@ -14,7 +14,7 @@
                 @click="room_click(room)"
                 :points=room.points
                 class="room-item"
-                v-bind:class="{ 'room-tried': is_room_tried(room), 'room-visited': is_room_visited(room), 'room-correct': is_room_correct(room)  }" />
+                v-bind:class="room_classes(room)" />
         </svg>
     </div>
 </template>
@@ -218,9 +218,10 @@ export default Vue.extend({
 
         room_click: function(room: Room) {
 
-            this.room_guesses.push(room);
+            if (!this.room_guesses.includes(room))
+                this.room_guesses.push(room);
 
-            if (this.is_room_visited(room))
+            /*if (this.is_room_visited(room))
             {
                 this.add_log('visited: ' + room.name);
             }
@@ -228,7 +229,7 @@ export default Vue.extend({
             if (this.is_room_correct(room))
             {
                 this.add_log('correct: ' + room.name);
-            }
+            }*/
 
         },
 
@@ -239,34 +240,44 @@ export default Vue.extend({
         // is is correct, then
         is_room_visited: function(room: Room): boolean {
 
-            if (this.is_room_correct(room))
+            for (let history_item of this.move_history)
             {
-                return false;
-            }
-            else
-            {
-                // this.add_log('chosen:' + room.name);
-                for (let history_item of this.move_history)
+                if (history_item.room.name == room.name)
                 {
-                    // this.add_log('history_item: ' + history_item.room.name);
-                    // console.log(history_item);
-                    if (history_item.room == room)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-                return false;
             }
+
+            return false;
 
         },
 
         is_room_correct: function(room: Room): void {
 
-            this.add_log('AAA correct: ' + this.move_history[this.move_history.length-1].room.name);
-            this.add_log('AAA chosen: ' + room.name);
+            return (room.name == this.move_history[this.move_history.length-1].room.name);
 
-            return (room == this.move_history[this.move_history.length-1].room);
-        }
+        },
+
+        room_classes: function(room: Room): string[] {
+            // 'room-tried': is_room_tried(room), 'room-visited': (is_room_tried(room) && is_room_visited(room)), 'room-correct': (is_room_tried(room) && is_room_correct(room))
+
+            if (this.room_guesses.includes(room))
+            {
+
+                if (this.is_room_correct(room))
+                {
+                    return ['room-tried', 'room-correct'];
+                }
+                else if (this.is_room_visited(room))
+                {
+                    return ['room-tried', 'room-visited'];
+                }
+
+                return ['room-tried'];
+            }
+            // alert(this.room_guesses)
+            return [];
+        },
 
     },
 
@@ -293,10 +304,9 @@ export default Vue.extend({
     cursor: pointer;
 
     &.room-tried {
-
         fill: red;
     }
-    
+
     &.room-correct {
         fill: lime;
     }
