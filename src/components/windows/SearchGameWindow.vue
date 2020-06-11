@@ -1,25 +1,11 @@
 <template>
     <div class="w-full">
 
-        <h1 class="text-3xl mb-4">Verstopper</h1>
+        <h1 class="text-3xl mb-4">Zoeker</h1>
 
-        <div>
-            <Timer :time_limit="timeLimit" @when_done="timer_done()" />
-        </div>
-		<span style="">{{ current_room != null ? (current_room.name + '  - can go to - ' + current_room.adjacent_rooms) : 'geen kamer gekozen'  }}</span>
+		<span>Je hebt nog {{  guesses }} pogingen</span>
 
-        <table>
-            <tr>
-                <th>Room</th>
-                <th>From</th>
-            </tr>
-            <tr v-for="move in move_history" v-bind:key="move.time">
-                <td>{{ move.room.name }}</td>
-                <td>{{ move.time.format('HH:mm:ss') }}</td>
-            </tr>
-        </table>
-
-        <svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
+		<svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
             <image xlink:href="/floorplan-1.gif" width="100%"  />
 
             <polygon
@@ -60,11 +46,11 @@ export default Vue.extend({
         move_history: { room: Room, time: Dayjs }[],
         current_room: Room | null,
         rooms: Room[],
-        timeLimit: number,
+        guesses: number,
     } {
         return {
 
-            timeLimit: (this.$store.state.settings.minutes) * 60 + this.$store.state.settings.seconds,
+            timeLimit: this.$store.state.settings.guesses,
 
             move_history: [],
 
@@ -264,7 +250,7 @@ export default Vue.extend({
         },
 
         timer_done: function(): void {
-            alert('done');
+            // alert('done');
         }
 
     },
