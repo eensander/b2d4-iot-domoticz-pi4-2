@@ -6,9 +6,9 @@
         <div>
             <Timer :time_limit="timeLimit" @when_done="timer_done()" />
         </div>
-		<span style="">{{ current_room != null ? (current_room.name + '  - can go to - ' + current_room.adjacent_rooms) : 'geen kamer gekozen'  }}</span>
+		<!-- <span style="">{{ current_room != null ? (current_room.name + '  - can go to - ' + current_room.adjacent_rooms) : 'geen kamer gekozen'  }}</span> -->
 
-        <table>
+        <!-- <table>
             <tr>
                 <th>Room</th>
                 <th>From</th>
@@ -17,9 +17,9 @@
                 <td>{{ move.room.name }}</td>
                 <td>{{ move.time.format('HH:mm:ss') }}</td>
             </tr>
-        </table>
+        </table> -->
 
-        <svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
+        <svg class="floorplan-svg" style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
             <image xlink:href="/floorplan-1.gif" width="100%"  />
 
             <polygon
@@ -275,7 +275,9 @@ export default Vue.extend({
 
     mounted: function() {
 
-        this.current_room = this.rooms.find(room => room.name == 'GREETING HALL');
+        let first_room = this.rooms.find(room => room.name == 'GREETING HALL');
+        if (first_room != undefined)
+            this.current_room = first_room;
 
     }
 

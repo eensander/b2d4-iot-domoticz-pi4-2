@@ -5,17 +5,38 @@
 
 		<span>Je hebt nog {{ amount_guesses }} pogingen</span>
 
-		<svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
-            <image xlink:href="/floorplan-1.gif" width="100%"  />
+        <div class="flex flex-col lg:flex-row mt-8">
 
-            <polygon
-                v-for="room in rooms"
-                :key="room.name"
-                @click="room_click(room)"
-                :points=room.points
-                class="room-item"
-                v-bind:class="room_classes(room)" />
-        </svg>
+            <table class="move-history mr-4 flex-1 my-auto">
+                <tr>
+                    <th>Time</th>
+                    <th>Room</th>
+                </tr>
+                <tr v-for="move in move_history.slice(0, history_shown_amount)"
+                    v-bind:key="move.time.valueOf()"
+                    v-bind:class="{ 'room-hover': (hovering_room == move.room.name) }">
+                    <td>{{ move_time_formatted(move.time) }}</td>
+                    <td @mouseover="hovering_room = move.room.name" @mouseleave="hovering_room = null">{{ move.room.name }}</td>
+                </tr>
+                <tr v-for="filled in (move_history.length - history_shown_amount)" class="blurred-text">
+                    <td>00:00</td>
+                    <td>000000000</td>
+                </tr>
+            </table>
+
+    		<svg class="floorplan-svg flex-auto" style="width:750px; height: auto;" viewBox="0 0 1000 1000">
+                <image xlink:href="/floorplan-1.gif" width="100%"  />
+
+                <polygon
+                    v-for="room in rooms"
+                    :key="room.name"
+                    @click="room_click(room)"
+                    :points=room.points
+                    class="room-item"
+                    v-bind:class="room_classes(room)" />
+            </svg>
+
+        </div>
     </div>
 </template>
 
@@ -44,7 +65,13 @@ export default Vue.extend({
         move_history: { room: Room, time: Dayjs }[],
         rooms: Room[],
         amount_guesses: number,
-        room_guesses: Room[]
+        room_guesses: Room[],
+
+        first_history: any,
+        last_history: any,
+
+        hovering_room: string | null
+
     } {
         return {
 
@@ -53,6 +80,11 @@ export default Vue.extend({
             room_guesses: [],
 
             move_history: this.$store.state.move_history,
+
+            first_history: this.$store.state.move_history[0],
+            last_history: this.$store.state.move_history[this.$store.state.move_history.length-1],
+
+            hovering_room: null,
 
             rooms: [
                 new Room({
@@ -252,9 +284,9 @@ export default Vue.extend({
 
         },
 
-        is_room_correct: function(room: Room): void {
+        is_room_correct: function(room: Room): boolean {
 
-            return (room.name == this.move_history[this.move_history.length-1].room.name);
+            return (room.name == this.last_history.room.name);
 
         },
 
@@ -275,9 +307,26 @@ export default Vue.extend({
 
                 return ['room-tried'];
             }
+            else if (this.hovering_room == room.name)
+            {
+                return ['room-hover'];
+            }
+
             // alert(this.room_guesses)
             return [];
         },
+
+        move_time_formatted: function(time: Date): string {
+            return dayjs(time).subtract(this.first_history.time).format('mm:ss');
+        }
+
+    },
+
+    computed: {
+
+        history_shown_amount: function() {
+            return Math.ceil((this.$store.state.settings.percentage / 100) * this.$store.state.move_history.length);
+        }
 
     },
 
@@ -293,30 +342,58 @@ export default Vue.extend({
 
 <style lang="scss">
 
+.floorplan-svg {
+    .room-item {
+        fill: gray;
+        stroke: blue;
+        stroke-width: 2;
 
-.room-item {
-    fill: black;
-    stroke: blue;
-    stroke-width: 2;
+        opacity: 0.3;
 
-    opacity: 0.3;
+        cursor: pointer;
 
-    cursor: pointer;
+        &.room-tried {
+            fill: red;
+        }
 
-    &.room-tried {
-        fill: red;
+        &.room-hover {
+            fill: black;
+            opacity: 0.5;
+        }
+
+        &.room-correct {
+            fill: lime;
+        }
+
+        &.room-visited {
+            fill: yellow;
+        }
     }
+}
 
-    &.room-correct {
-        fill: lime;
+table.move-history {
+    @apply table-fixed w-64;
+
+    tr {
+
+        &.room-hover {
+            @apply bg-blue-200;
+        }
+
+        th {
+            @apply border-gray-400 border px-4 py-1 bg-gray-300;
+        }
+
+        td {
+            @apply border px-4 py-1;
+        }
+
     }
+}
 
-    &.room-visited {
-        fill: yellow;
-    }
-
-
-
+.blurred-text {
+    color: transparent;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
 </style>
