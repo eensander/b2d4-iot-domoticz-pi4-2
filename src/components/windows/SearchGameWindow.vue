@@ -31,6 +31,7 @@
                     v-for="room in rooms"
                     :key="room.name"
                     @click="room_click(room)"
+                    @mouseover="hovering_room = room.name" @mouseleave="hovering_room = null"
                     :points=room.points
                     class="room-item"
                     v-bind:class="room_classes(room)" />
@@ -293,27 +294,32 @@ export default Vue.extend({
         room_classes: function(room: Room): string[] {
             // 'room-tried': is_room_tried(room), 'room-visited': (is_room_tried(room) && is_room_visited(room)), 'room-correct': (is_room_tried(room) && is_room_correct(room))
 
+            let classes = [];
+
             if (this.room_guesses.includes(room))
             {
 
                 if (this.is_room_correct(room))
                 {
-                    return ['room-tried', 'room-correct'];
+                    classes = ['room-tried', 'room-correct'];
                 }
                 else if (this.is_room_visited(room))
                 {
-                    return ['room-tried', 'room-visited'];
+                    classes = ['room-tried', 'room-visited'];
                 }
-
-                return ['room-tried'];
+                else
+                {
+                    classes = ['room-tried'];
+                }
             }
-            else if (this.hovering_room == room.name)
+
+            if (this.hovering_room == room.name)
             {
-                return ['room-hover'];
+                classes.push('room-hover');
             }
 
             // alert(this.room_guesses)
-            return [];
+            return classes;
         },
 
         move_time_formatted: function(time: Date): string {
@@ -344,11 +350,11 @@ export default Vue.extend({
 
 .floorplan-svg {
     .room-item {
-        fill: gray;
+        fill: #373737;
         stroke: blue;
         stroke-width: 2;
 
-        opacity: 0.3;
+        opacity: 0.2;
 
         cursor: pointer;
 
@@ -357,7 +363,7 @@ export default Vue.extend({
         }
 
         &.room-hover {
-            fill: black;
+            // fill: black;
             opacity: 0.5;
         }
 
