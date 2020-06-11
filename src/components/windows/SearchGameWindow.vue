@@ -3,7 +3,7 @@
 
         <h1 class="text-3xl mb-4">Zoeker</h1>
 
-		<span>Je hebt nog {{  guesses }} pogingen</span>
+		<span>Je hebt nog {{ amount_guesses }} pogingen</span>
 
 		<svg style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
             <image xlink:href="/floorplan-1.gif" width="100%"  />
@@ -14,7 +14,7 @@
                 @click="room_click(room)"
                 :points=room.points
                 class="room-item"
-                v-bind:class="{ 'room-active': is_active(room), 'room-possible': is_move_possible(room) }" />
+                v-bind:class="{ 'room-tried': is_room_tried(room), 'room-visited': is_room_visited(room), 'room-correct': is_room_correct(room)  }" />
         </svg>
     </div>
 </template>
@@ -22,7 +22,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import store from '@/store';
-import Timer from '@/components/Timer.vue';
 import Room from '@/classes/room';
 
 import axios from 'axios';
@@ -39,22 +38,21 @@ export default Vue.extend({
     },
 
     components: {
-        Timer
     },
 
     data: function(): {
         move_history: { room: Room, time: Dayjs }[],
-        current_room: Room | null,
         rooms: Room[],
-        guesses: number,
+        amount_guesses: number,
+        room_guesses: Room[]
     } {
         return {
 
-            timeLimit: this.$store.state.settings.guesses,
+            amount_guesses: this.$store.state.settings.guesses,
 
-            move_history: [],
+            room_guesses: [],
 
-            current_room: null,
+            move_history: this.$store.state.move_history,
 
             rooms: [
                 new Room({
@@ -220,37 +218,54 @@ export default Vue.extend({
 
         room_click: function(room: Room) {
 
-            if (this.current_room == room) {
-                return;
-            }
-            else if (this.current_room == null || this.is_move_possible(room))
-            {
-                this.current_room = room;
-                this.move_history.push({
-                    room: room,
-                    time: dayjs()
-                });
+            this.room_guesses.push(room);
 
-                this.add_log('You went to room ' + room.name);
-                // alert('you clicked ' + room.name);
+            if (this.is_room_visited(room))
+            {
+                this.add_log('visited: ' + room.name);
+            }
+
+            if (this.is_room_correct(room))
+            {
+                this.add_log('correct: ' + room.name);
+            }
+
+        },
+
+        is_room_tried: function(room: Room): boolean {
+            return this.room_guesses.includes(room);
+        },
+
+        // is is correct, then
+        is_room_visited: function(room: Room): boolean {
+
+            if (this.is_room_correct(room))
+            {
+                return false;
             }
             else
             {
-                alert('you cant move to this room from your current room');
-
+                // this.add_log('chosen:' + room.name);
+                for (let history_item of this.move_history)
+                {
+                    // this.add_log('history_item: ' + history_item.room.name);
+                    // console.log(history_item);
+                    if (history_item.room == room)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
+
         },
 
-        is_active: function(room: Room): boolean {
-            return this.current_room != null && this.current_room == room;
-        },
+        is_room_correct: function(room: Room): void {
 
-        is_move_possible: function(room: Room): boolean {
-            return this.current_room != null && this.current_room.can_go_to(room);
-        },
+            this.add_log('AAA correct: ' + this.move_history[this.move_history.length-1].room.name);
+            this.add_log('AAA chosen: ' + room.name);
 
-        timer_done: function(): void {
-            // alert('done');
+            return (room == this.move_history[this.move_history.length-1].room);
         }
 
     },
@@ -258,7 +273,7 @@ export default Vue.extend({
 
     mounted: function() {
 
-        this.current_room = this.rooms.find(room => room.name == 'GREETING HALL');
+        console.log(this);
 
     }
 
@@ -269,21 +284,28 @@ export default Vue.extend({
 
 
 .room-item {
-    fill: lime;
-    stroke: purple;
-    stroke-width: 1;
+    fill: black;
+    stroke: blue;
+    stroke-width: 2;
 
     opacity: 0.3;
 
     cursor: pointer;
 
-    &.room-active {
-        fill: orange;
-    }
+    &.room-tried {
 
-    &.room-possible {
         fill: red;
     }
+    
+    &.room-correct {
+        fill: lime;
+    }
+
+    &.room-visited {
+        fill: yellow;
+    }
+
+
 
 }
 

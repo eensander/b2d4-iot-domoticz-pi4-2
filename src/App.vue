@@ -27,14 +27,16 @@ import { Component, Vue } from 'vue-property-decorator';
 import TestWindow from './components/windows/TestWindow.vue';
 import StartWindow from './components/windows/StartWindow.vue';
 import SettingsWindow from './components/windows/SettingsWindow.vue';
-import HidingGameWindow from './components/windows/HidingGameWindow.vue';
+import HideGameWindow from './components/windows/HideGameWindow.vue';
+import SearchGameWindow from './components/windows/SearchGameWindow.vue';
 
 var windows: any = {
     'test': TestWindow,
 
     'settings': SettingsWindow,
     'start': StartWindow,
-    'hiding_game': HidingGameWindow,
+    'hide_game': HideGameWindow,
+    'search_game': SearchGameWindow,
 }
 
 /*

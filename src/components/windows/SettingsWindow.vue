@@ -23,7 +23,7 @@
                 <input class="SettingsInput" v-model="guesses" type="number" min="0">
             </div>
             <div class="mt-6 text-center w-full">
-                <button class="btn btn-blue w-32" @click="open_menu('hiding_game')">Start</button>
+                <button class="btn btn-blue w-32" @click="open_menu('hide_game')">Start</button>
             </div>
         </div>
 

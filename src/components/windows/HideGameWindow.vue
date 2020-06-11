@@ -13,7 +13,7 @@
                 <th>Room</th>
                 <th>From</th>
             </tr>
-            <tr v-for="move in move_history" v-bind:key="move.time">
+            <tr v-for="move in move_history" v-bind:key="move.time.valueOf()">
                 <td>{{ move.room.name }}</td>
                 <td>{{ move.time.format('HH:mm:ss') }}</td>
             </tr>
@@ -24,7 +24,7 @@
 
             <polygon
                 v-for="room in rooms"
-                :key="room.name"
+                v-bind:key="room.name"
                 @click="room_click(room)"
                 :points=room.points
                 class="room-item"
@@ -64,7 +64,7 @@ export default Vue.extend({
     } {
         return {
 
-            timeLimit: (this.$store.state.settings.minutes) * 60 + this.$store.state.settings.seconds,
+            timeLimit: parseInt((this.$store.state.settings.minutes) * 60 + this.$store.state.settings.seconds, 10),
 
             move_history: [],
 
@@ -264,7 +264,10 @@ export default Vue.extend({
         },
 
         timer_done: function(): void {
-            alert('done');
+
+            this.$store.commit('set_move_history', this.move_history);
+            this.open_menu('search_game');
+
         }
 
     },
@@ -283,20 +286,20 @@ export default Vue.extend({
 
 
 .room-item {
-    fill: lime;
-    stroke: purple;
-    stroke-width: 1;
+    fill: black;
+    stroke: blue;
+    stroke-width: 2;
 
     opacity: 0.3;
 
     cursor: pointer;
 
     &.room-active {
-        fill: orange;
+        fill: #df00e6;
     }
 
     &.room-possible {
-        fill: red;
+        fill: #009ae6;
     }
 
 }
