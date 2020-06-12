@@ -9,18 +9,23 @@
 
             <table class="move-history mr-4 flex-1 my-auto">
                 <tr>
-                    <th>Time</th>
-                    <th>Room</th>
+                    <th class="w-2/12">#</th>
+                    <th class="w-4/12">Time</th>
+                    <th class="w-6/12">Room</th>
                 </tr>
-                <tr v-for="move in move_history.slice(0, history_shown_amount)"
+                <tr v-for="(move, i) in move_history.slice(0, history_shown_amount)"
                     v-bind:key="move.time.valueOf()"
-                    v-bind:class="{ 'room-hover': (hovering_room == move.room.name) }">
+                    v-bind:class="{ 'room-hover': (hovering_room == move.room.name) }"
+                    @mouseover="hovering_room = move.room.name"
+                    @mouseleave="hovering_room = null">
+                    <td>{{ i+1 }}</td>
                     <td>{{ move_time_formatted(move.time) }}</td>
-                    <td @mouseover="hovering_room = move.room.name" @mouseleave="hovering_room = null">{{ move.room.name }}</td>
+                    <td>{{ move.room.name }}</td>
                 </tr>
-                <tr v-for="filled in (move_history.length - history_shown_amount)" class="blurred-text">
-                    <td>00:00</td>
-                    <td>000000000</td>
+                <tr v-for="(move, i) in move_history.slice(history_shown_amount, move_history.length)">
+                    <td>{{ i+history_shown_amount+1 }}</td>
+                    <td class="blurred-text">00:00</td>
+                    <td class="blurred-text">000000000</td>
                 </tr>
             </table>
 
@@ -294,7 +299,7 @@ export default Vue.extend({
         room_classes: function(room: Room): string[] {
             // 'room-tried': is_room_tried(room), 'room-visited': (is_room_tried(room) && is_room_visited(room)), 'room-correct': (is_room_tried(room) && is_room_correct(room))
 
-            let classes = [];
+            let classes: string[] = [];
 
             if (this.room_guesses.includes(room))
             {
@@ -346,7 +351,7 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 .floorplan-svg {
     .room-item {
@@ -398,8 +403,9 @@ table.move-history {
 }
 
 .blurred-text {
+    user-select: none;
     color: transparent;
-    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    text-shadow: 0 0 6px rgba(0,0,0,0.5);
 }
 
 </style>

@@ -256,7 +256,7 @@ export default Vue.extend({
         },
 
         is_active: function(room: Room): boolean {
-            return this.current_room != null && this.current_room == room;
+            return this.current_room != null && this.current_room.name == room.name;
         },
 
         is_move_possible: function(room: Room): boolean {
@@ -284,26 +284,27 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
+.floorplan-svg {
+    .room-item {
+        fill: black;
+        stroke: blue;
+        stroke-width: 2;
 
-.room-item {
-    fill: black;
-    stroke: blue;
-    stroke-width: 2;
+        opacity: 0.3;
 
-    opacity: 0.3;
+        cursor: pointer;
 
-    cursor: pointer;
+        &.room-active {
+            fill: #df00e6;
+        }
 
-    &.room-active {
-        fill: #df00e6;
+        &.room-possible {
+            fill: #009ae6;
+        }
+
     }
-
-    &.room-possible {
-        fill: #009ae6;
-    }
-
 }
 
 </style>
