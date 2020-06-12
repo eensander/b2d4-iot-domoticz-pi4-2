@@ -1,48 +1,62 @@
 <template>
     <div class="w-full">
 
-        <h1 class="text-3xl mb-4">Zoeker</h1>
+        <div v-if="game_done == false">
 
-		<span>Je hebt nog {{ amount_guesses }} pogingen</span>
+            <h1 class="main">Zoeker</h1>
 
-        <div class="flex flex-col lg:flex-row mt-8">
+            <p class="mb-2">Klik op de kamer waar jij denkt dat de verstopper zit.</p>
+            <p><span class="bg-white px-2">Wit</span> = de verstopper is niet in deze kamer geweest</p>
+            <p><span class="px-2" style="background-color: #7bcef7;">Blauw</span> = de verstopper is wel in deze kamer geweest</p>
+            <p><span class="px-2" style="background-color: #ee7ef2;">Paars</span> = de verstopper zat in deze kamer verstopt</p>
 
-            <table class="move-history mr-4 flex-1 my-auto">
-                <tr>
-                    <th class="w-2/12">#</th>
-                    <th class="w-4/12">Time</th>
-                    <th class="w-6/12">Room</th>
-                </tr>
-                <tr v-for="(move, i) in move_history.slice(0, history_shown_amount)"
-                    v-bind:key="move.time.valueOf()"
-                    v-bind:class="{ 'room-hover': (hovering_room == move.room.name) }"
-                    @mouseover="hovering_room = move.room.name"
-                    @mouseleave="hovering_room = null">
-                    <td>{{ i+1 }}</td>
-                    <td>{{ move_time_formatted(move.time) }}</td>
-                    <td>{{ move.room.name }}</td>
-                </tr>
-                <tr v-for="(move, i) in move_history.slice(history_shown_amount, move_history.length)">
-                    <td>{{ i+history_shown_amount+1 }}</td>
-                    <td class="blurred-text">00:00</td>
-                    <td class="blurred-text">000000000</td>
-                </tr>
-            </table>
+    		<span class="mt-4 block">Je hebt nog {{ amount_guesses }} pogingen</span>
 
-    		<svg class="floorplan-svg flex-auto" style="width:750px; height: auto;" viewBox="0 0 1000 1000">
-                <image xlink:href="/floorplan-1.gif" width="100%"  />
+            <div class="flex flex-col lg:flex-row mt-8">
 
-                <polygon
-                    v-for="room in rooms"
-                    :key="room.name"
-                    @click="room_click(room)"
-                    @mouseover="hovering_room = room.name" @mouseleave="hovering_room = null"
-                    :points=room.points
-                    class="room-item"
-                    v-bind:class="room_classes(room)" />
-            </svg>
+                <table class="move-history mr-4 flex-1 my-auto">
+                    <tr>
+                        <th class="w-2/12">#</th>
+                        <th class="w-4/12">Time</th>
+                        <th class="w-6/12">Room</th>
+                    </tr>
+                    <tr v-for="(move, i) in move_history.slice(0, history_shown_amount)"
+                        v-bind:key="move.time.valueOf()"
+                        v-bind:class="{ 'room-hover': (hovering_room == move.room.name && amount_guesses > 0) }"
+                        @mouseover="hovering_room = move.room.name"
+                        @mouseleave="hovering_room = null">
+                        <td>{{ i+1 }}</td>
+                        <td>{{ move_time_formatted(move.time) }}</td>
+                        <td>{{ move.room.name }}</td>
+                    </tr>
+                    <tr v-for="(move, i) in move_history.slice(history_shown_amount, move_history.length)">
+                        <td>{{ i+history_shown_amount+1 }}</td>
+                        <td class="blurred-text">00:00</td>
+                        <td class="blurred-text">000000000</td>
+                    </tr>
+                </table>
 
+        		<svg class="floorplan-svg flex-auto" style="width:750px; height: auto;" viewBox="0 0 1000 1000">
+                    <image xlink:href="/floorplan-1.gif" width="100%"  />
+
+                    <polygon
+                        v-for="room in rooms"
+                        :key="room.name"
+                        @click="room_click(room)"
+                        @mouseover="hovering_room = room.name" @mouseleave="hovering_room = null"
+                        :points=room.points
+                        class="room-item"
+                        v-bind:class="room_classes(room)" />
+                </svg>
+
+            </div>
         </div>
+
+        <div class="mt-6 text-center w-full" v-if="game_done">
+            <h1 class="main">End</h1>
+            <button class="btn btn-blue w-32" @click="open_menu('start')">Play again</button>
+        </div>
+
     </div>
 </template>
 
@@ -54,7 +68,9 @@ import Room from '@/classes/room';
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs'
 
+import VueConfetti from 'vue-confetti';
 
+Vue.use(VueConfetti);
 
 export default Vue.extend({
 
@@ -73,10 +89,12 @@ export default Vue.extend({
         amount_guesses: number,
         room_guesses: Room[],
 
-        first_history: any,
-        last_history: any,
+        first_history: { room: Room, time: Dayjs },
+        last_history: { room: Room, time: Dayjs },
 
-        hovering_room: string | null
+        hovering_room: string | null,
+
+        game_done: boolean,
 
     } {
         return {
@@ -91,6 +109,8 @@ export default Vue.extend({
             last_history: this.$store.state.move_history[this.$store.state.move_history.length-1],
 
             hovering_room: null,
+
+            game_done: false,
 
             rooms: [
                 new Room({
@@ -254,20 +274,54 @@ export default Vue.extend({
 
     methods: {
 
+        game_end: function(won: boolean)
+        {
+            this.game_done = true;
+            if (won)
+            {
+                this.$toast.open('Gefeliciteerd!');
+
+                this.$confetti.start({
+                    dropRate: 5,
+                    particles: [
+                        {
+                            type: 'heart',
+                        }
+                    ],
+                    defaultColors: [
+                        '#ffc107',
+                        '#ff8f00',
+                        '#ff5722',
+                        '#1e88e5',
+                    ],
+                });
+                setTimeout(() => { this.$confetti.stop() }, 4000);
+
+            }
+            else
+            {
+                this.$toast.info('Helaas, volgende keer beter!');
+            }
+        },
+
         room_click: function(room: Room) {
 
-            if (!this.room_guesses.includes(room))
+            if (!this.room_guesses.includes(room) && this.amount_guesses > 0)
+            {
+                this.amount_guesses--;
                 this.room_guesses.push(room);
 
-            /*if (this.is_room_visited(room))
-            {
-                this.add_log('visited: ' + room.name);
-            }
+                if (this.is_room_correct(room))
+                {
+                    this.game_end(true);
+                }
 
-            if (this.is_room_correct(room))
+            }
+            else
             {
-                this.add_log('correct: ' + room.name);
-            }*/
+                this.$toast.info('Je pogingen zijn op');
+                this.game_end(this.is_room_correct(room));
+            }
 
         },
 
@@ -318,7 +372,7 @@ export default Vue.extend({
                 }
             }
 
-            if (this.hovering_room == room.name)
+            if (this.hovering_room == room.name && this.amount_guesses > 0)
             {
                 classes.push('room-hover');
             }
@@ -341,13 +395,6 @@ export default Vue.extend({
 
     },
 
-
-    mounted: function() {
-
-        console.log(this);
-
-    }
-
 });
 </script>
 
@@ -361,23 +408,23 @@ export default Vue.extend({
 
         opacity: 0.2;
 
-        cursor: pointer;
-
         &.room-tried {
-            fill: red;
+            fill: white;
         }
 
         &.room-hover {
             // fill: black;
             opacity: 0.5;
+            cursor: pointer;
         }
 
         &.room-correct {
-            fill: lime;
+            fill: #df00e6;
+            opacity: 0.5;
         }
 
         &.room-visited {
-            fill: yellow;
+            fill: #009ae6;
         }
     }
 }

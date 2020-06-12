@@ -9,7 +9,7 @@ export default new Vuex.Store({
             minutes: 0,
             seconds: 10,
             percentage: 60,
-            guesses: 2
+            guesses: 3
         },
         move_history: []
     },

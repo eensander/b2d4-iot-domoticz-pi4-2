@@ -1,10 +1,19 @@
 <template>
     <div class="w-full">
 
-        <h1 class="text-3xl">Verstoppertje</h1>
+        <h1 class="main">Verstoppertje</h1>
 
-        <p>[inleiding]</p>
-        <p>[instructies]</p>
+        <p class="mb-4">Welkom bij het Verstoppertje-spel, ontwikkeld in opdracht van Zuyd Hogeschool voor het vak IoT Applications.</p>
+        <div class="border-b border-gray-400 w-full lg:w-2/3 mx-auto mb-4"></div>
+        <p class="mb-4">Je speelt dit spel met twee personen. Het doel van het spel is vrij eenvoudig:</p>
+
+        <div class="mx-auto" style="max-width: 24rem;">
+            <ol class="list-decimal text-left">
+                <li class="mb-2">Kies in het eerste scherm samen de spelinstellingen</li>
+                <li class="mb-4">De <strong>verstopper</strong> gaat zich door te klikken op kamers voor de ingestelde tijd voorbij is in een kamer verstoppen.</li>
+                <li class="mb-4">De <strong>zoeker</strong> ziet een deel van het door de verstopper afgelegde pad en moet raden in welke kamer de verstopper zich het laatst heeft begeven.</li>
+            </ol>
+        </div>
 
         <div class="mt-6 text-center w-full">
             <button class="btn btn-blue w-32" @click="open_menu('settings')">Start</button>

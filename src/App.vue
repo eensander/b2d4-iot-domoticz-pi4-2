@@ -114,6 +114,10 @@ export default Vue.extend({
 }
 
 
+h1.main {
+    @apply text-3xl mb-4 font-semibold;
+}
+
 .btn {
 
     @apply border-b-4 px-3 py-1;

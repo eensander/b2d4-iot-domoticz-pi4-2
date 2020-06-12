@@ -1,7 +1,7 @@
 <template>
     <div class="w-full">
 
-        <h1 class="text-3xl mb-4">Verstopper</h1>
+        <h1 class="main">Verstopper</h1>
 
         <div>
             <Timer :time_limit="timeLimit" @when_done="timer_done()" />
@@ -19,7 +19,7 @@
             </tr>
         </table> -->
 
-        <svg class="floorplan-svg" style="width:1000px; height:1000px;" viewBox="0 0 1000 1000">
+        <svg class="floorplan-svg mx-auto" style="max-width:1000px; height: auto;" viewBox="0 0 1000 1000">
             <image xlink:href="/floorplan-1.gif" width="100%"  />
 
             <polygon
@@ -246,12 +246,15 @@ export default Vue.extend({
                 });
 
                 this.add_log('You went to room ' + room.name);
-                // alert('you clicked ' + room.name);
             }
             else
             {
-                alert('you cant move to this room from your current room');
-
+                this.add_log('You cant move to this room from your current room');
+                this.$toast.open({
+                    message: 'Je kan nu niet naar deze kamer',
+                    type: 'info',
+                    duration: 2000,
+                });
             }
         },
 

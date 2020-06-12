@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <h1 class="text-3xl mb-4">Instellingen</h1>
+        <h1 class="main">Instellingen</h1>
 
         <div class="w-full lg:w-2/3 xl:w-1/2 mx-auto text-left">
             <div class="SettingsRow">
