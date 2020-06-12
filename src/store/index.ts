@@ -3,17 +3,25 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-    state: {
-        settings: {
-            minutes: 0,
-            seconds: 10,
-            percentage: 60,
-            guesses: 3
-        },
-        move_history: []
+
+export const default_state = {
+    settings: {
+        minutes: 0,
+        seconds: 10,
+        percentage: 60,
+        guesses: 3
     },
+    move_history: [],
+    game_won: undefined,
+}
+
+export default new Vuex.Store({
+    state: default_state,
     mutations: {
+        reset_state(state) {
+            Object.assign(state, default_state);
+        },
+
         change_minutes(state, minutes) {
             state.settings.minutes = minutes
         },
@@ -29,6 +37,9 @@ export default new Vuex.Store({
 
         set_move_history(state, move_history) {
             state.move_history = move_history;
+        },
+        set_game_won(state, game_won) {
+            state.game_won = game_won;
         }
     },
     actions: {
@@ -40,6 +51,8 @@ export default new Vuex.Store({
         seconds: state => state.settings.seconds,
         percentage: state => state.settings.percentage,
         guesses: state => state.settings.guesses,
-        move_history: state => state.move_history
+
+        move_history: state => state.move_history,
+        game_won: state => state.game_won
     },
 });

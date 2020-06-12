@@ -54,7 +54,7 @@ export default Vue.extend({
 
 
     mounted: function() {
-
+        this.$store.commit('reset_state');
         // this.current_room = this.rooms.find(room => room.name == 'GREETING HALL')
     }
 

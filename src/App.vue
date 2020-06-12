@@ -10,7 +10,7 @@
             <component :open_menu="open_menu" :add_log="add_log" :domoticz_base="domoticz_base"  :is="dynamicWindow"></component>
         </div>
 
-        <div id="log" class="mx-8 md:mx-32 xl:mx-64 relative">
+        <div id="log" class="mx-8 md:mx-32 xl:mx-64 relative hidden">
             <textarea readonly class="w-full h-48 resize-none border-gray-400 border-b border-l border-r font-mono px-2 py-1" placeholder="Log content will be displayed here">
             </textarea>
             <div class="absolute right-0 top-0">
@@ -30,6 +30,8 @@ import SettingsWindow from './components/windows/SettingsWindow.vue';
 import HideGameWindow from './components/windows/HideGameWindow.vue';
 import SearchGameWindow from './components/windows/SearchGameWindow.vue';
 
+import EndWindow from './components/windows/EndWindow.vue';
+
 var windows: any = {
     'test': TestWindow,
 
@@ -37,6 +39,8 @@ var windows: any = {
     'start': StartWindow,
     'hide_game': HideGameWindow,
     'search_game': SearchGameWindow,
+
+    'end': EndWindow,
 }
 
 /*
