@@ -8,7 +8,16 @@ Currently, only the _On_ and _Off_ switch-buttons and the 'Wait 5 Method' button
 
 ![Screenshot](https://i.imgur.com/UuOS1qD.png)
 
-## Project setup
+## Clone the repository
+```
+git clone https://github.com/eensander/b2d4-iot-domoticz-pi4-2.git
+```
+## Navigate into the project folder
+```
+cd b2d4-iot-domoticz-pi4-2
+```
+
+## Install the required dependencies
 ```
 npm install
 ```
@@ -16,9 +25,4 @@ npm install
 ### Compiles and hot-reloads for development
 ```
 npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
 ```
