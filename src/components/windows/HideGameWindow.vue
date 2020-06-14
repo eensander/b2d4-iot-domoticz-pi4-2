@@ -43,7 +43,7 @@ import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs'
 
 import Timer from '@/components/Timer.vue';
-import Room from '@/classes/room';
+import Room from '@/classes/Room';
 
 import { floorplan_1 as floorplan } from '@/objects/floorplan_1';
 

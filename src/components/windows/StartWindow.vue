@@ -26,7 +26,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import store from '@/store';
 import Timer from '@/components/Timer.vue';
-import Room from '@/classes/room';
+import Room from '@/classes/Room';
 
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs'

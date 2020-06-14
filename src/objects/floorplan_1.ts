@@ -1,5 +1,5 @@
-import Room from '@/classes/room';
-import Floor from '@/classes/floor';
+import Room from '@/classes/Room';
+import Floor from '@/classes/Floor';
 
 export const floorplan_1 = new Floor({
     image_url: '/floorplan-1.gif',
