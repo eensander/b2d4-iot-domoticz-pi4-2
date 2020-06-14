@@ -33,12 +33,8 @@ Start domoticz, navigate to
 ```
 Setup -> Settings -> Backup/restore
 ```
-Click the button
-```
-Restore Database
-```
-And select Domoticz.db
+Click Restore Database and select Domoticz.db
 
 # Usage
 
-At this point you can go to localhost:8080 (or whatever port Domoticz is set to run on) to 
+At this point you can go to localhost:8080 (or whatever port Domoticz is set to run on) to view the lamps, and localhost:8081 for the Verstopapplicatie.
