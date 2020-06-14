@@ -8,6 +8,7 @@ Currently, only the _On_ and _Off_ switch-buttons and the 'Wait 5 Method' button
 
 ![Screenshot](https://i.imgur.com/UuOS1qD.png)
 
+# Installation
 ## Clone the repository
 ```
 git clone https://github.com/eensander/b2d4-iot-domoticz-pi4-2.git
@@ -22,9 +23,22 @@ cd b2d4-iot-domoticz-pi4-2
 npm install
 ```
 
-## Compiles and hot-reloads for development
+## Start the web service
 ```
 npm run serve
 ```
 
-Also make sure that Domoticz is running.
+## Importing the database
+Start domoticz, navigate to 
+```
+Setup -> Settings -> Backup/restore
+```
+Click the button
+```
+Restore Database
+```
+And select Domoticz.db
+
+# Usage
+
+At this point you can go to localhost:8080 (or whatever port Domoticz is set to run on) to 
