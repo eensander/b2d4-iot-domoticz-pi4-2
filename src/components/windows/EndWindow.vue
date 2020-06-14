@@ -58,7 +58,8 @@ export default Vue.extend({
             this.$toast.open('Gefeliciteerd!');
 
             this.$confetti.start({
-                dropRate: 5,
+                dropRate: 6,
+                particlesPerFrame: 1,
                 particles: [
                     {
                         type: 'rect',
@@ -71,7 +72,7 @@ export default Vue.extend({
                     '#1e88e5',
                 ],
             });
-            setTimeout(() => { this.$confetti.stop() }, 4000);
+            setTimeout(() => { this.$confetti.stop() }, 3000);
 
         }
         else

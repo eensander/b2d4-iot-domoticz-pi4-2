@@ -69,7 +69,6 @@ import { floorplan_1 as floorplan } from '@/objects/floorplan_1';
 export default Vue.extend({
 
     props: {
-        domoticz_base: String,
         add_log: Function,
         open_menu: Function,
     },
@@ -119,22 +118,25 @@ export default Vue.extend({
 
         room_click: function(room: Room) {
 
-            this.amount_guesses--;
-
-            if (!this.room_guesses.includes(room.name) && this.amount_guesses > 0)
+            if (!this.is_room_tried(room))
             {
-                this.room_guesses.push(room.name);
+                this.amount_guesses--;
 
-                if (this.is_room_correct(room))
+                if (this.amount_guesses > 0)
                 {
-                    this.game_end(true);
-                }
+                    this.room_guesses.push(room.name);
 
-            }
-            else
-            {
-                this.$toast.info('Je pogingen zijn op');
-                this.game_end(this.is_room_correct(room));
+                    if (this.is_room_correct(room))
+                    {
+                        this.game_end(true);
+                    }
+
+                }
+                else
+                {
+                    this.$toast.info('Je pogingen zijn op');
+                    this.game_end(this.is_room_correct(room));
+                }
             }
 
         },
@@ -169,7 +171,7 @@ export default Vue.extend({
 
             let classes: string[] = [];
 
-            if (this.room_guesses.includes(room.name))
+            if (this.is_room_tried(room))
             {
 
                 if (this.is_room_correct(room))

@@ -2,8 +2,10 @@
     <div id="app" class="my-4 mx-4">
         <div class="mx-8 md:mx-32 xl:mx-64 mt-12 md:mt-32 bg-gray-600 text-gray-100 py-2 px-4 text-left flex flex-col sm:flex-row">
             <span class="cursor-pointer flex-1 mb-2 sm:mb-0 mx-auto sm:mx-0" @click="open_menu('start')">B2D4 - IOT Applications</span>
+            <!--
             <input title="Zet aan om Domoticz te gebruiken." class="mr-2" type="checkbox" v-model="domoticz_enabled" />
             <input title="Domoticz base-url" :disabled="!domoticz_enabled" :class="{ 'bg-gray-500': !domoticz_enabled }" class="w-full sm:w-64 px-2 text-black bg-gray-200 text-gray-900" type="text" v-model="domoticz_base" />
+            -->
         </div>
         <!-- <Main :domoticz_base="domoticz_base" :add_log="add_log" /> -->
 
@@ -11,8 +13,6 @@
             <component
                 :open_menu="open_menu"
                 :add_log="add_log"
-                :domoticz_base="domoticz_base"
-                :domoticz_enabled="domoticz_enabled"
                 @change="alert('gang')"
                 :is="dynamicWindow"></component>
         </div>
@@ -66,8 +66,6 @@ export default Vue.extend({
 
     data: (): any => {
         return {
-            domoticz_base: 'http://localhost:8080',
-            domoticz_enabled: true,
             dynamicWindow: StartWindow,
         };
     },

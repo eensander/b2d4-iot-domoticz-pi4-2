@@ -50,8 +50,6 @@ import { floorplan_1 as floorplan } from '@/objects/floorplan_1';
 export default Vue.extend({
 
     props: {
-        domoticz_base: String,
-        domoticz_enabled: Boolean,
         add_log: Function,
         open_menu: Function,
     },
@@ -68,7 +66,10 @@ export default Vue.extend({
         rooms: Room[],
         floor_img_url: string,
 
-        websocket_client: any
+        websocket_client: any,
+
+        domoticz_enabled: boolean,
+        domoticz_base: string,
 
     } {
         return {
@@ -83,6 +84,9 @@ export default Vue.extend({
 
             websocket_client: null,
 
+            domoticz_enabled: this.$store.state.settings.domoticz_enabled,
+            domoticz_base: this.$store.state.settings.domoticz_base,
+
         }
     },
 
@@ -90,15 +94,6 @@ export default Vue.extend({
 
         listen_for_triggers: function()
         {
-            // const socket = io(this.domoticz_base + '/json');
-            // const socket = io('ws://localhost:8080/json', { transport : ['websocket'] });
-            // const socket = io('ws://localhost:8080/json', {
-            //     origins: ['localhost:8081'],
-            //     path: '/json',
-            //     transport : ['websocket']
-            // });
-            // socket.connect();
-            // console.log(socket);
 
             const domoticz_socket_url = this.domoticz_base.replace(/^http?:/i, 'ws:') + '/json';
             console.log('Domoticz websocket url: ' + domoticz_socket_url);
@@ -107,6 +102,9 @@ export default Vue.extend({
 
             this.websocket_client.onerror = () => {
                 this.$toast.error('Kan geen verbinding maken met Domoticz\'s socket-server op: ' + domoticz_socket_url + '. Controleer het adres', { duration: 3000 });
+
+                this.domoticz_enabled = false;
+                this.$store.commit('change_domoticz_enabled', false);
             };
 
             this.websocket_client.onopen = () => {
@@ -130,9 +128,12 @@ export default Vue.extend({
                             if (sensor.Status == 'On') {
                                 // this.$toast.success(`wow vgm gebeurd er iets in kamer ${sensor.Name}`);
 
-                                let room: Room | undefined = this.rooms.find(x => x.domoticz_id === parseInt(sensor.idx, 10));
+                                let room_or_not: Room | undefined = this.rooms.find(x => x.domoticz_id === parseInt(sensor.idx, 10));
 
-                                if (room !== undefined) {
+                                if (room_or_not !== undefined) {
+
+                                    let room: Room = room_or_not;
+
                                     axios.get(`${this.domoticz_base}/json.htm?type=command&param=switchlight&idx=${sensor.idx}&switchcmd=Off`)
                                     .then(response => {
                                         if (response.data.status == 'OK')
@@ -161,9 +162,11 @@ export default Vue.extend({
                                     .catch(error => {
                                         this.$toast.error(`Kon de sensor in kamer ${sensor.Name} niet resetten`);
                                     });
+
                                 } else {
                                     this.$toast.error('Er werd een kamer geactiveerd die niet (correct) is gedefinieerd: ' + sensor.Name);
                                 }
+
                             }
                         }
                     }
@@ -225,7 +228,10 @@ export default Vue.extend({
 
         timer_done: function(): void {
 
-            this.websocket_client.close();
+            if (this.websocket_client != null)
+            {
+                this.websocket_client.close();
+            }
 
             this.$store.commit('set_move_history', this.move_history);
             this.open_menu('search_game');
@@ -239,26 +245,6 @@ export default Vue.extend({
 
         if (this.domoticz_enabled)
         {
-            // preparing all switches by disabling all switches beforehand
-            axios.get(`${this.domoticz_base}/json.htm?type=devices&filter=light&used=true&order=LastUpdate`)
-            .then(response => {
-                for(let sensor_i in response.data.result)
-                {
-                    let sensor = response.data.result[sensor_i];
-                    // console.log(sensor.Name + ' : ' + sensor.Status + ' : ' + sensor.idx);
-                    if (sensor.Status == 'On')
-                    {
-                        axios.get(`${this.domoticz_base}/json.htm?type=command&param=switchlight&idx=${sensor.idx}&switchcmd=Off`)
-                        .catch(error => {
-                            this.$toast.error(`Could not turn off lightswtich ${sensor.Name}`);
-                        });
-                    }
-                }
-
-            }).catch(error => {
-                this.$toast.error('Could not fetch data, is your domoticz API url correct and is it running?');
-                console.log(['error: ', error]);
-            });
 
             this.listen_for_triggers();
 
