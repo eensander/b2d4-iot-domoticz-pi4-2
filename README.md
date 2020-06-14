@@ -22,7 +22,9 @@ cd b2d4-iot-domoticz-pi4-2
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Compiles and hot-reloads for development
 ```
 npm run serve
 ```
+
+Also make sure that Domoticz is running.
