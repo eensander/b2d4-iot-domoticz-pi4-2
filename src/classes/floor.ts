@@ -6,7 +6,7 @@ export default class Floor {
     rooms!: Array<Room>;
 
     // https://stackoverflow.com/a/37682352
-    constructor(init?:Partial<Room>) {
+    constructor(init?:Partial<Floor>) {
         Object.assign(this, init);
     }
 

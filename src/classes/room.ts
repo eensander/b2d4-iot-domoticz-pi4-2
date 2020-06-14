@@ -4,6 +4,8 @@ export default class Room {
     public points!: string;
     public adjacent_rooms!: Array<string>;
 
+    public domoticz_id?: number;
+
     // https://stackoverflow.com/a/37682352
     constructor(init?:Partial<Room>) {
         Object.assign(this, init);

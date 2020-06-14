@@ -1,13 +1,20 @@
 <template>
     <div id="app" class="my-4 mx-4">
         <div class="mx-8 md:mx-32 xl:mx-64 mt-12 md:mt-32 bg-gray-600 text-gray-100 py-2 px-4 text-left flex flex-col sm:flex-row">
-            <span class="flex-1 mb-2 sm:mb-0 mx-auto sm:mx-0">B2D4 - IOT Applications</span>
-             <input class="w-full sm:w-64 px-2 text-black bg-gray-200 text-gray-900" type="text" v-model="domoticz_base" />
+            <span class="cursor-pointer flex-1 mb-2 sm:mb-0 mx-auto sm:mx-0" @click="open_menu('start')">B2D4 - IOT Applications</span>
+            <input title="Zet aan om Domoticz te gebruiken." class="mr-2" type="checkbox" v-model="domoticz_enabled" />
+            <input title="Domoticz base-url" :disabled="!domoticz_enabled" :class="{ 'bg-gray-500': !domoticz_enabled }" class="w-full sm:w-64 px-2 text-black bg-gray-200 text-gray-900" type="text" v-model="domoticz_base" />
         </div>
         <!-- <Main :domoticz_base="domoticz_base" :add_log="add_log" /> -->
 
         <div class="mx-8 md:mx-32 xl:mx-64 bg-gray-200 py-8 px-16">
-            <component :open_menu="open_menu" :add_log="add_log" :domoticz_base="domoticz_base"  :is="dynamicWindow"></component>
+            <component
+                :open_menu="open_menu"
+                :add_log="add_log"
+                :domoticz_base="domoticz_base"
+                :domoticz_enabled="domoticz_enabled"
+                @change="alert('gang')"
+                :is="dynamicWindow"></component>
         </div>
 
         <div id="log" class="mx-8 md:mx-32 xl:mx-64 relative hidden">
@@ -60,6 +67,7 @@ export default Vue.extend({
     data: (): any => {
         return {
             domoticz_base: 'http://localhost:8080',
+            domoticz_enabled: true,
             dynamicWindow: StartWindow,
         };
     },
@@ -80,16 +88,19 @@ export default Vue.extend({
         add_log(text: string): void {
 
             // date formatting (partially) from: https://samrubin.co/blog/leading-zeroes-for-javascript-date-formatting
-            const d = new Date();
-            const dDate = [('0' + (d.getMonth() + 1)).slice(-2), ('0' + d.getDate()).slice(-2), d.getFullYear()].join('-');
-            const dTime = [('0' + d.getHours()).slice(-2), ('0' + d.getMinutes()).slice(-2), ('0' + d.getSeconds()).slice(-2)].join(':');
-            const dTenthSecond = Math.floor((d.getMilliseconds() / 100));
-            const formattedDate = `${dDate} ${dTime}.${dTenthSecond}`;
+            let d = new Date();
+            let dDate = [('0' + (d.getMonth() + 1)).slice(-2), ('0' + d.getDate()).slice(-2), d.getFullYear()].join('-');
+            let dTime = [('0' + d.getHours()).slice(-2), ('0' + d.getMinutes()).slice(-2), ('0' + d.getSeconds()).slice(-2)].join(':');
+            let dTenthSecond = Math.floor((d.getMilliseconds() / 100));
+            let formattedDate = `${dDate} ${dTime}.${dTenthSecond}`;
+            let logline = formattedDate + '] ' + text;
 
-            const logarea = document.querySelector('#log textarea');
+            let logarea = document.querySelector('#log textarea');
+
+            console.log('LOG: ' + logline);
 
             if (logarea != null) {
-                logarea.innerHTML += (logarea.innerHTML === '' ? '' : '\n') + formattedDate + '] ' + text;
+                logarea.innerHTML += (logarea.innerHTML === '' ? '' : '\n') + logline;
                 logarea.scrollTop = logarea.scrollHeight;
             }
 

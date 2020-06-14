@@ -20,7 +20,7 @@
         </table> -->
 
         <svg class="floorplan-svg mx-auto" style="max-width:1000px; height: auto;" viewBox="0 0 1000 1000">
-            <image xlink:href="/floorplan-1.gif" width="100%"  />
+            <image :xlink:href="floor_img_url" width="100%"  />
 
             <polygon
                 v-for="room in rooms"
@@ -36,18 +36,22 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import store from '@/store';
-import Timer from '@/components/Timer.vue';
-import Room from '@/classes/room';
+
+var W3CWebSocket = require('websocket').w3cwebsocket;
 
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs'
 
+import Timer from '@/components/Timer.vue';
+import Room from '@/classes/room';
 
+import { floorplan_1 as floorplan } from '@/objects/floorplan_1';
 
 export default Vue.extend({
 
     props: {
         domoticz_base: String,
+        domoticz_enabled: Boolean,
         add_log: Function,
         open_menu: Function,
     },
@@ -59,178 +63,116 @@ export default Vue.extend({
     data: function(): {
         move_history: { room: Room, time: Dayjs }[],
         current_room: Room | null,
-        rooms: Room[],
         timeLimit: number,
+
+        rooms: Room[],
+        floor_img_url: string,
+
+        websocket_client: any
+
     } {
         return {
 
             timeLimit: parseInt((this.$store.state.settings.minutes) * 60 + this.$store.state.settings.seconds, 10),
+            current_room: null,
 
             move_history: [],
 
-            current_room: null,
+            rooms: floorplan.rooms,
+            floor_img_url: floorplan.image_url,
 
-            rooms: [
-                new Room({
-                    name: 'WJ.C.',
-                    points: '100,100 308,100 308,159 295,159 294,208 100,208',
-                    adjacent_rooms: [
-                        'MASTER BATH',
-                    ],
-                }),
-                new Room({
-                    name: 'MASTER SUITE',
-                    points: '52,214 296,214 296,401 52,401',
-                    adjacent_rooms: [
-                        'MASTER BATH',
-                        'BREAKFAST',
-                        'COVERED PORCH',
-                    ],
-                }),
-                new Room({
-                    name: 'MASTER BATH',
-                    points: '313,101 406,101 406,167 432,167 432,312 301,312 301,166 314,166',
-                    adjacent_rooms: [
-                        'WJ.C.',
-                        'MASTER SUITE',
-                    ],
-                }),
-                new Room({
-                    name: 'LNDRY',
-                    points: '412,102 532,102 532,206 439,206 439,159 412,159',
-                    adjacent_rooms: [
-                        'MUD RM',
-                    ],
-                }),
-                new Room({
-                    name: 'MUD RM',
-                    points: '441,216 535,216 535,310 440,310',
-                    adjacent_rooms: [
-                        'LNDRY',
-                        'KITCHEN',
-                        '3-CAR GARAGE',
-                    ],
-                }),
-                new Room({
-                    name: '3-CAR GARAGE',
-                    points: '541,101 825,101 825,329 802,329 802,461 541,461',
-                    adjacent_rooms: [
-                        'MUD RM',
-                    ],
-                }),
-                new Room({
-                    name: 'COVERED PORCH',
-                    points: '90,414 175,414 175,549 285,549 285,719 90,719',
-                    adjacent_rooms: [
-                        'MASTER SUITE',
-                        'FAMILY ROOM',
-                        'BEDROOM 2',
-                        'BEDROOM 3',
-                    ]
-                }),
-                new Room({
-                    name: 'BREAKFAST',
-                    points: '183,407 340,407 340,540 183,540',
-                    adjacent_rooms: [
-                        'MASTER SUITE',
-                        'KITCHEN',
-                        'FAMILY ROOM',
-                    ]
-                }),
-                new Room({
-                    name: 'KITCHEN',
-                    points: '359,315 535,315 535,462 547,462 547,520 359,520 ',
-                    adjacent_rooms: [
-                        'MUD RM',
-                        'BREAKFAST',
-                        'FAMILY ROOM',
-                        'DINING',
-                    ]
-                }),
-                new Room({
-                    name: 'FAMILY ROOM',
-                    points: '306,546 614,546 614,622 547,622 547,708 306,708',
-                    adjacent_rooms: [
-                        'KITCHEN',
-                        'BREAKFAST',
-                        'BEDROOM 2',
-                        'BEDROOM 3',
-                        'COVERED PORCH',
-                        'BEDROOM 4',
-                        'GREETING HALL',
-                    ]
-                }),
-                new Room({
-                    name: 'DINING',
-                    points: '623,468 778,468 778,544 803,544 803,616 625,616',
-                    adjacent_rooms: [
-                        'KITCHEN',
-                        'GREETING HALL',
-                    ]
-                }),
-                new Room({
-                    name: 'GREETING HALL',
-                    points: '556,630 870,630 870,710 556,710',
-                    adjacent_rooms: [
-                        'DINING',
-                        'FAMILY ROOM',
-                        'LIBRARY/BEDROOM 5',
-                        'LIVING ROOM',
-                        'ENTRY PORCH'
-                    ]
-                }),
-                new Room({
-                    name: 'ENTRY PORCH',
-                    points: '814,546 950,546 950,792 874,792 874,615 814,615',
-                    adjacent_rooms: [
-                        'GREETING HALL',
-                    ]
-                }),
-                new Room({
-                    name: 'LIVING ROOM',
-                    points: '720,720 865,720 865,875 720,875',
-                    adjacent_rooms: [
-                        'GREETING HALL',
-                    ]
-                }),
-                new Room({
-                    name: 'LIBRARY/BEDROOM 5',
-                    points: '582,720 715,720 715,878 582,878',
-                    adjacent_rooms: [
-                        'GREETING HALL',
-                    ]
-                }),
-                new Room({
-                    name: 'BEDROOM 4',
-                    points: '407,804 547,804 547,851 575,851 575,938 407,938',
-                    adjacent_rooms: [
-                        'FAMILY ROOM',
-                    ]
-                }),
-                new Room({
-                    name: 'BEDROOM 3',
-                    points: '255,789 298,789 298,798 400,798 400,938 255,938',
-                    adjacent_rooms: [
-                        'COVERED PORCH',
-                        'FAMILY ROOM',
-                        'BEDROOM 2',
-                    ]
-                }),
-                new Room({
-                    name: 'BEDROOM 2',
-                    points: '55,789 244,789 244,936 55,936',
-                    adjacent_rooms: [
-                        'COVERED PORCH',
-                        'BEDROOM 3',
-                        'FAMILY ROOM',
-                    ]
-                }),
-            ],
+            websocket_client: null,
 
         }
     },
 
     methods: {
+
+        listen_for_triggers: function()
+        {
+            // const socket = io(this.domoticz_base + '/json');
+            // const socket = io('ws://localhost:8080/json', { transport : ['websocket'] });
+            // const socket = io('ws://localhost:8080/json', {
+            //     origins: ['localhost:8081'],
+            //     path: '/json',
+            //     transport : ['websocket']
+            // });
+            // socket.connect();
+            // console.log(socket);
+
+            const domoticz_socket_url = this.domoticz_base.replace(/^http?:/i, 'ws:') + '/json';
+            console.log('Domoticz websocket url: ' + domoticz_socket_url);
+
+            this.websocket_client = new W3CWebSocket(domoticz_socket_url, 'domoticz');
+
+            this.websocket_client.onerror = () => {
+                this.$toast.error('Kan geen verbinding maken met Domoticz\'s socket-server op: ' + domoticz_socket_url + '. Controleer het adres', { duration: 3000 });
+            };
+
+            this.websocket_client.onopen = () => {
+                this.$toast.open('Verbonden met Domoticz\'s websocket-server', { duration: 3000 });
+            };
+
+            this.websocket_client.onclose = () => {
+                this.$toast.warning('Verbinding met Domoticz\'s websocket-server verbroken', { duration: 3000 });
+            };
+
+            this.websocket_client.onmessage = (e: any) => {
+                if (typeof e.data === 'string') {
+                    // console.log("Received: '" + e.data + "'");
+                    let json_response = JSON.parse(e.data);
+
+                    if ('data' in json_response) {
+                        let json_response_data = JSON.parse(json_response.data);
+                        // console.log(json_response_data);
+
+                        for (let sensor of json_response_data.result) {
+                            if (sensor.Status == 'On') {
+                                // this.$toast.success(`wow vgm gebeurd er iets in kamer ${sensor.Name}`);
+
+                                let room: Room | undefined = this.rooms.find(x => x.domoticz_id === parseInt(sensor.idx, 10));
+
+                                if (room !== undefined) {
+                                    axios.get(`${this.domoticz_base}/json.htm?type=command&param=switchlight&idx=${sensor.idx}&switchcmd=Off`)
+                                    .then(response => {
+                                        if (response.data.status == 'OK')
+                                        {
+                                            this.add_log(`Sensor ${sensor.Name} werd extern getriggerd.`);
+                                            // this.$toast.info(`Sensor ${sensor.Name} werd extern getriggerd.`);
+
+                                            if (this.current_room == null || this.is_move_possible(room))
+                                            {
+                                                this.current_room = room;
+                                                this.move_history.push({
+                                                    room: room,
+                                                    time: dayjs()
+                                                });
+                                            }
+                                            else
+                                            {
+                                                this.$toast.open({
+                                                    message: '[EXTERN] Je kan nu niet naar deze kamer' + sensor.Name,
+                                                    type: 'info',
+                                                    duration: 2000,
+                                                });
+                                            }
+                                        }
+                                    })
+                                    .catch(error => {
+                                        this.$toast.error(`Kon de sensor in kamer ${sensor.Name} niet resetten`);
+                                    });
+                                } else {
+                                    this.$toast.error('Er werd een kamer geactiveerd die niet (correct) is gedefinieerd: ' + sensor.Name);
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+                    console.log('Received undefined datatype: ' + typeof e.data);
+                }
+            };
+        },
 
         room_click: function(room: Room) {
 
@@ -239,17 +181,32 @@ export default Vue.extend({
             }
             else if (this.current_room == null || this.is_move_possible(room))
             {
-                this.current_room = room;
-                this.move_history.push({
-                    room: room,
-                    time: dayjs()
-                });
-
-                this.add_log('You went to room ' + room.name);
+                if (!this.domoticz_enabled)
+                {
+                    this.current_room = room;
+                    this.move_history.push({
+                        room: room,
+                        time: dayjs()
+                    });
+                    this.add_log('You went to room ' + room.name);
+                }
+                else
+                {
+                    axios.get(`${this.domoticz_base}/json.htm?type=command&param=switchlight&idx=${room.domoticz_id}&switchcmd=On`)
+                    .then(response => {
+                        if (response.data.status == 'OK')
+                        {
+                            this.add_log('Sensor in kamer ' + room.name + ' geactiveerd');
+                        }
+                    })
+                    .catch(e => {
+                        this.$toast.error('Het activeren van deze sensor werd door Domoticz geweigerd.');
+                    });
+                }
             }
             else
             {
-                this.add_log('You cant move to this room from your current room');
+                this.add_log('De gekozen kamer ligt sluit niet aan op de huidige kamer');
                 this.$toast.open({
                     message: 'Je kan nu niet naar deze kamer',
                     type: 'info',
@@ -268,6 +225,8 @@ export default Vue.extend({
 
         timer_done: function(): void {
 
+            this.websocket_client.close();
+
             this.$store.commit('set_move_history', this.move_history);
             this.open_menu('search_game');
 
@@ -277,6 +236,33 @@ export default Vue.extend({
 
 
     mounted: function() {
+
+        if (this.domoticz_enabled)
+        {
+            // preparing all switches by disabling all switches beforehand
+            axios.get(`${this.domoticz_base}/json.htm?type=devices&filter=light&used=true&order=LastUpdate`)
+            .then(response => {
+                for(let sensor_i in response.data.result)
+                {
+                    let sensor = response.data.result[sensor_i];
+                    // console.log(sensor.Name + ' : ' + sensor.Status + ' : ' + sensor.idx);
+                    if (sensor.Status == 'On')
+                    {
+                        axios.get(`${this.domoticz_base}/json.htm?type=command&param=switchlight&idx=${sensor.idx}&switchcmd=Off`)
+                        .catch(error => {
+                            this.$toast.error(`Could not turn off lightswtich ${sensor.Name}`);
+                        });
+                    }
+                }
+
+            }).catch(error => {
+                this.$toast.error('Could not fetch data, is your domoticz API url correct and is it running?');
+                console.log(['error: ', error]);
+            });
+
+            this.listen_for_triggers();
+
+        }
 
         let first_room = this.rooms.find(room => room.name == 'GREETING HALL');
         if (first_room != undefined)
